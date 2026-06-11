@@ -119,29 +119,26 @@ Standing preferences for this project:
 
 The template ships four role agents in `.claude/agents/` and a `/kickoff`
 skill. The lead is the main session: subagents cannot call each other, so the
-session running `/kickoff` routes every handoff (hub-and-spoke), and GitHub
-holds the state (sub-plan comments, draft PRs, labels), which is what makes a
-dropped session resumable.
+session running `/kickoff` routes every handoff, and GitHub (sub-plan and
+verdict comments, draft PRs, labels) holds the state that makes a dropped
+session resumable.
 
-- `architect` - advisory, read-only. Sub-plans, split proposals for L/XL
-  issues, arbitration. Returns NEEDS_DECISION instead of guessing.
-- `developer` - one issue end to end in an isolated worktree: branch, TDD,
-  conventional commits, draft PR. Reports DONE / DONE_WITH_CONCERNS /
-  NEEDS_CONTEXT / BLOCKED.
-- `tester` - independent verification on the branch, read-only. PASS / FAIL
-  with reproduction commands.
-- `reviewer` - spec pass then quality pass, read-only. APPROVE /
-  CHANGES_REQUESTED with file:line findings.
+- `architect` - advisory, read-only: sub-plans, split proposals, arbitration.
+- `developer` - one issue end to end in an isolated worktree.
+- `tester` - independent verification on the branch, read-only.
+- `reviewer` - spec pass then quality pass, read-only.
 
 Refine and size issues in discussion first; mark dependencies with a literal
-`Blocked by: #N` line in the issue body. Then `/kickoff <issues>` fans out one
-developer per unblocked issue (up to 3 in parallel), routes tester and
-reviewer findings back as fix dispatches (max 3 rounds per stage, then the
-`needs-human` label), and marks clean PRs ready. Merging stays human and gates
-the next wave.
+`Blocked by: #N` line in the issue body. Then `/kickoff <issues>` (user-typed
+only; it does not auto-trigger) runs unblocked issues in parallel waves to
+ready PRs. Under `/kickoff` the sub-plan comment substitutes for the full plan
+in `docs/plans/`. Merging stays human and gates the next wave. Caps, routing,
+and report contracts live in `.claude/skills/kickoff/SKILL.md` and the agent
+files; they are not repeated here.
 
 Labels: `in-progress` (package dispatched; resume, do not restart) and
-`needs-human` (loop exhausted or blocked), on top of the sizing set.
+`needs-human` (parked: question, blocker, or exhausted fix loop), on top of
+the sizing set.
 
 ## How to pick up a task
 
@@ -161,8 +158,9 @@ Labels: `in-progress` (package dispatched; resume, do not restart) and
    before requesting review.
 8. Mark the PR ready for review.
 
-For a batch of refined, sized issues, `/kickoff` automates steps 3 to 8 per
-issue (see "Agent team").
+For a batch of refined, sized issues, `/kickoff` automates this flow per
+issue, with the sub-plan comment standing in for step 5's full plan (see
+"Agent team").
 
 ## Repo layout
 

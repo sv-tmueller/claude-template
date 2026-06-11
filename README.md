@@ -16,8 +16,9 @@ ready-made agent team for Claude Code.
 - `.claude/skills/kickoff/` - `/kickoff`: fans refined, sized issues out to
   the agent team in parallel waves, through implement, test, and review, to a
   ready PR per issue.
-- `.claude/settings.json` - enables the obra/superpowers plugin per project
-  (the methodology skills: brainstorming, writing-plans, TDD, verification).
+- `.claude/settings.json` - enables obra's superpowers plugin per project
+  (`superpowers@claude-plugins-official`; the methodology skills:
+  brainstorming, writing-plans, TDD, verification).
 
 Generalized from two project `CLAUDE.md` files (a Python advisory bot and a
 TypeScript web app), keeping the shared backbone and dropping the project

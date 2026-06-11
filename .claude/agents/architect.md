@@ -31,8 +31,8 @@ dependencies between them as `Blocked by: #N` lines.
 ## ARBITRATION
 
 Input: a reviewer finding and the developer's pushback. Decide who is right and
-state the required outcome. Anchor on the issue text and the four principles:
-think before coding, simplicity first, surgical changes, goal-driven execution.
+state the required outcome. Anchor on the issue text and the four principles
+in `~/.claude/CLAUDE.md`.
 
 ## Output contract
 
