@@ -115,6 +115,34 @@ Standing preferences for this project:
 - Parallel work: fan out subagents for independent research or implementation
   streams. Default to parallel over serial.
 
+## Agent team
+
+The template ships four role agents in `.claude/agents/` and a `/kickoff`
+skill. The lead is the main session: subagents cannot call each other, so the
+session running `/kickoff` routes every handoff (hub-and-spoke), and GitHub
+holds the state (sub-plan comments, draft PRs, labels), which is what makes a
+dropped session resumable.
+
+- `architect` - advisory, read-only. Sub-plans, split proposals for L/XL
+  issues, arbitration. Returns NEEDS_DECISION instead of guessing.
+- `developer` - one issue end to end in an isolated worktree: branch, TDD,
+  conventional commits, draft PR. Reports DONE / DONE_WITH_CONCERNS /
+  NEEDS_CONTEXT / BLOCKED.
+- `tester` - independent verification on the branch, read-only. PASS / FAIL
+  with reproduction commands.
+- `reviewer` - spec pass then quality pass, read-only. APPROVE /
+  CHANGES_REQUESTED with file:line findings.
+
+Refine and size issues in discussion first; mark dependencies with a literal
+`Blocked by: #N` line in the issue body. Then `/kickoff <issues>` fans out one
+developer per unblocked issue (up to 3 in parallel), routes tester and
+reviewer findings back as fix dispatches (max 3 rounds per stage, then the
+`needs-human` label), and marks clean PRs ready. Merging stays human and gates
+the next wave.
+
+Labels: `in-progress` (package dispatched; resume, do not restart) and
+`needs-human` (loop exhausted or blocked), on top of the sizing set.
+
 ## How to pick up a task
 
 1. `gh issue list --state open` (add `--label phase:<current>` if you use phase
@@ -133,9 +161,16 @@ Standing preferences for this project:
    before requesting review.
 8. Mark the PR ready for review.
 
+For a batch of refined, sized issues, `/kickoff` automates steps 3 to 8 per
+issue (see "Agent team").
+
 ## Repo layout
 
 ```
+.claude/
+  agents/            role agents: architect, developer, tester, reviewer
+  skills/            project skills, /kickoff
+  settings.json      project settings; enables the superpowers plugin
 docs/
   architecture/      stack and policy decisions, data model, domain math
   operations/        run/deploy/operate: environments, CI/CD, runbooks
