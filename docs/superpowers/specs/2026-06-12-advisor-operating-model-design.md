@@ -1,7 +1,8 @@
 # Advisor operating model (CEO + advisor + autonomous team)
 
 Status: approved design, 2026-06-12. Grilled and signed off decision by
-decision in session. Implementation pending.
+decision in session. Implemented: `/advisor` skill, CLAUDE.md "Operating
+model" section, /kickoff amendments (issue #36).
 
 ## Goal
 
