@@ -2,7 +2,7 @@
 name: sync-template
 description: Pull the latest claude-template machinery and process updates into this repo and open a PR. Works in repos created from any template version, including repos with no .claude/ at all. User-invocable only.
 disable-model-invocation: true
-argument-hint: [template-repo, default sv-tmueller/claude-template]
+argument-hint: "[template-repo]"
 ---
 
 Sync this repo with its template. Repos created from a GitHub template share
