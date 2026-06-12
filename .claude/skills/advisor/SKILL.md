@@ -1,6 +1,6 @@
 ---
 name: advisor
-description: Run a need through the advisor loop: refine it with the user, propose a batch of work packages, get one sign-off, dispatch the agent team uninterrupted, and report. User-invocable only.
+description: "Run a need through the advisor loop: refine it with the user, propose a batch of work packages, get one sign-off, dispatch the agent team uninterrupted, and report. User-invocable only."
 disable-model-invocation: true
 argument-hint: "<the need | blank to resume the open batch>"
 ---
