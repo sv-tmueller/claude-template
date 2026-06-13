@@ -26,11 +26,16 @@ If the delta is empty, say so and stop.
 
 ## 2. File classes, in scope only
 
-- Machinery (`.claude/agents/`, `.claude/skills/`, `.claude/workflows/`): copy the template
-  version over the local file. Guard first: if the local file differs from
-  BOTH the old template version (from the stamp) and the new one, it was
-  modified locally; do not overwrite, list it in the PR as a conflict for
-  the user. Never delete local agents or skills the template does not have.
+- Machinery (`.claude/agents/`, `.claude/skills/`, `.claude/workflows/`): three-way
+  guard before copying. Get the three versions: old = `git show <stamp>:<path>` in
+  the template clone; new = the checked-out file in the template clone (HEAD);
+  local = the file in this repo. If local == old, overwrite with new. If local
+  differs from BOTH old and new, the file was modified locally; do not overwrite,
+  list it in the PR as a conflict for the user. (If local already matches new, no
+  action needed.) In unknown-base mode (no stamp), the old version does not exist
+  so the three-way test cannot run; treat every machinery file as a conflict, do
+  not overwrite, list it in the PR. Never delete local agents or skills the
+  template does not have.
 - `.claude/settings.json`: merge by key. Template-shipped keys (such as its
   `enabledPlugins` entries) update; project keys (permissions, hooks, env)
   stay.
