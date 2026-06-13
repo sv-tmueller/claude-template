@@ -66,8 +66,9 @@ consolidate (opus, 1 agent)
   write the markdown report, return a structured summary
 ```
 
-Every worker receives the scout's repo-map for global context. Scout and all
-workers are pinned to Sonnet (cheap, parallel). The critic is pinned to Opus
+The architecture worker receives the scout's repo-map for global context; area
+workers receive only their own name and paths. Scout and all workers are pinned
+to Sonnet (cheap, parallel). The critic is pinned to Opus
 (synthesis and judgment). This is the model split the CLAUDE.md model policy
 prescribes; review-codebase becomes a second worked example next to
 review-changes.
@@ -93,12 +94,20 @@ review-changes.
 ## Bounding guarantee
 
 Agents per run = 1 (scout) + (N + 1) (area workers + architecture worker) + 1
-(critic) = N + 3. With the default cap N = 8 that is 11 agents. The cap is
-enforced by the scout, there is no per-file fan-out and no loop, so the count
-cannot grow with repo size. When the repo has more areas than the cap, the scout
-records the remainder in `dropped[]` and the critic reports it. Coverage is never
-silently truncated, matching the recent review-changes fix that flags uncovered
-dimensions when a worker fails to return.
+(critic) = N + 3. N is the number of areas, sized by the scout to the repo and
+hard-clamped in-script to a ceiling `MAX_AREAS` (default 24), so the count scales
+with repo size but never exceeds MAX_AREAS + 3 (27 by default). A small repo uses
+far fewer; the scout is told to size N to the codebase, not pad to the ceiling.
+There is no per-file fan-out and no loop. The ceiling is overridable per run via
+`args.areas`.
+
+The clamp is structural (`areas.slice(0, MAX_AREAS)`), so the bound holds even if
+the scout returns more areas than asked. When the repo is too big for MAX_AREAS
+areas, the leftover is reported, not silently skipped: `coverage.ceilingReached`
+is set, `coverage.areasDropped` lists the uncovered paths, and
+`coverage.suggestedNextAction` tells the caller to re-run with a higher `areas`
+cap or a scoped `path`. This is the same no-silent-truncation discipline as the
+review-changes coverage fix.
 
 ## What each reviewer looks for
 
@@ -142,8 +151,9 @@ workers) and `reportPath`.
   writes the report file itself, since the script cannot. Area and architecture
   workers stay read-only.
 - Optional args: `path` (scope to a subdirectory, default the whole repo),
-  `areas` (override the cap, default 8). Both have safe defaults so `/review-codebase`
-  with no args works in any repo.
+  `areas` (override the ceiling, default 24). args may arrive as an object or, via
+  some callers, as a JSON string, so the script normalizes both. Both have safe
+  defaults so `/review-codebase` with no args works in any repo.
 
 ## Template and process notes
 

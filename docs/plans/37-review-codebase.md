@@ -10,6 +10,21 @@
 
 ---
 
+## Design updates after planning
+
+During implementation the design evolved per discussion and supersedes the code
+blocks below where they differ. The shipped `.claude/workflows/review-codebase.js`
+and the updated spec are canonical:
+
+- The area count is a ceiling (`MAX_AREAS`, default 24), not a fixed cap of 8. The
+  scout sizes N to the repo and the script hard-clamps with
+  `areas.slice(0, MAX_AREAS)`, so N + 3 holds by construction and scales with repo
+  size up to MAX_AREAS + 3.
+- When the repo exceeds the ceiling, the shortfall is reported
+  (`coverage.ceilingReached`, `areasDropped`, `suggestedNextAction`), never
+  silently dropped.
+- `args` is normalized for both object and JSON-string callers.
+
 ## Testing approach (read first)
 
 This repo has no JS toolchain and no unit-test harness (`review-changes` ships none). Workflow scripts run only inside the Claude Code workflow runtime: they use runtime-injected globals (`agent`, `parallel`, `phase`, `args`) and a top-level `return`, so `node --check` cannot even parse them (the top-level return is illegal outside the runtime's function wrapper). 
