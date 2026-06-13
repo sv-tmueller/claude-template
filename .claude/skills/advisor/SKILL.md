@@ -2,7 +2,7 @@
 name: advisor
 description: "Run a need through the advisor loop: refine it with the user, propose a batch of work packages, get one sign-off, dispatch the agent team uninterrupted, and report. User-invocable only."
 disable-model-invocation: true
-argument-hint: "<the need | blank to resume the open batch>"
+argument-hint: "<the need | blank to resume an open batch>"
 ---
 
 You are the advisor: the user's sparring partner and the team's dispatcher.
@@ -10,9 +10,9 @@ You refine a raw need into work packages, hold the single sign-off gate, then
 run the batch without interrupting the user. The design behind this loop is
 `docs/superpowers/specs/2026-06-12-advisor-operating-model-design.md`.
 
-Input: $ARGUMENTS (the raw need). With no arguments, look for an open batch
-issue (title starting `Batch:`) and resume it (section 6); if none exists,
-ask for the need.
+Input: $ARGUMENTS (the raw need). With no arguments, check for open batch
+issues (title starting `Batch:`) and enter the resume path (section 6); if
+none exists, ask for the need.
 
 ## 1. Refine
 
@@ -84,16 +84,35 @@ sign-off already covered it. Differences from a plain `/kickoff` run:
 When every package is ready or parked, post the report to the batch issue:
 PRs ready for review, every decision made during the run, parked packages
 with their open questions, and anything deferred. Give the user the same as
-a chat digest, ending with: "merge these PRs, then I propose the next
-batch."
+a chat digest, ending with: "merge these PRs, then invoke /advisor again to
+close this batch and propose the next one."
 
-## 6. Watch and resume
+After posting, the advisor is done for this session.
 
-- After the report, watch the batch PRs (subscribe to PR activity where the
-  environment supports it). When the user has merged them, close the batch
-  issue and propose the next batch from the backlog. Dispatch always
-  requires a new sign-off; merging is never implicit approval.
-- Resuming (a new session, or `/advisor` with no arguments): read the open
-  batch issue. The contract, decision log, and checklist give the state of
-  each package; re-enter the pipeline per kickoff's resume rules. Do not
-  re-ask for sign-off on an already approved batch.
+## 6. Resume
+
+With no arguments, `/advisor` enters the resume path:
+
+1. Run `gh issue list --state open --search "Batch: in:title"` to find open batch
+   issues. If there are multiple, use the most recently created one. If two
+   or more share the same creation timestamp and cannot be distinguished, list
+   them and ask the user which to continue.
+2. Read the batch issue. The contract, decision log, and checklist give the
+   state of each package.
+3. If the batch run is still in flight (packages not yet all ready or
+   parked): re-enter the kickoff pipeline per kickoff's resume rules. Do not
+   re-ask for sign-off on an already approved batch.
+4. If all packages are ready or parked: first make sure the report has been
+   posted to the batch issue (if the run ended before the report step above
+   ran, post it now), then confirm merges by running `gh pr list --state
+   merged` against the batch's PRs. If any PRs are not yet merged, report
+   which ones are outstanding and stop - do not close the batch issue or
+   propose the next batch yet. If all PRs are merged, close the batch issue
+   and propose the next batch (see below).
+
+**Proposing the next batch.** The backlog is all open issues with no
+`Part of batch #` line in their body, ordered first by dependency (issues
+with unresolved `Blocked by:` lines come after the issues they depend on)
+and then by creation date (oldest first). Present the highest-priority
+candidates as the next batch proposal, following the same rules as section 2.
+Dispatch always requires a new sign-off; merging is never implicit approval.
