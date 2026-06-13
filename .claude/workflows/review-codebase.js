@@ -39,7 +39,13 @@ function parseArgs(a) {
   return {}
 }
 const opts = parseArgs(args)
-const root = opts.path || '.'
+// Validate root against path-safe chars; fall back to '.' if it contains shell
+// metacharacters. Protects both the git command string and the agent prompts
+// that interpolate the value.
+function safeRef(value, fallback) {
+  return typeof value === 'string' && /^[\w.~^\/\-]+$/.test(value) ? value : fallback
+}
+const root = safeRef(opts.path, '.')
 const MAX_AREAS = opts.areas || 24
 
 const FINDING = {
@@ -129,7 +135,7 @@ const REPORT_SCHEMA = {
       required: ['areasReviewed', 'areasDropped', 'workersFailed', 'ceilingReached'],
     },
   },
-  required: ['verdict', 'summary', 'reportPath', 'mustFix', 'coverage'],
+  required: ['verdict', 'summary', 'reportPath', 'mustFix', 'shouldFix', 'nits', 'coverage'],
 }
 
 const scope = `Work from the repo root scoped to "${root}". List source files with \`git ls-files -- ${root}\` (it already respects .gitignore); ignore vendored and generated trees (node_modules, dist, build, vendor, .git, coverage) and lockfiles.`
@@ -155,7 +161,10 @@ const allAreas = scoutFailed ? [] : map.areas
 // returns more. Overflow areas are reported as dropped, not silently lost, so the
 // N + 3 bound holds by construction rather than by the scout obeying the prompt.
 const areas = allAreas.slice(0, MAX_AREAS)
-const scoutDropped = (map && Array.isArray(map.dropped) ? map.dropped : []).concat(
+// The scout drops paths only when the repo exceeds the ceiling, so there is one
+// shortfall cause. Combine the scout's own dropped list with any areas the script
+// clamps beyond MAX_AREAS, and report it as a single signal.
+const scoutDropped = (scoutFailed ? [] : Array.isArray(map.dropped) ? map.dropped : []).concat(
   allAreas.slice(MAX_AREAS).map((a) => a.name)
 )
 
@@ -194,10 +203,10 @@ const raw = areaResults
   .flatMap((r) => r.findings)
   .concat(archResult ? archResult.findings : [])
 
-// The repo did not fit the ceiling: surface it loudly so the caller can act.
+// A non-empty scoutDropped means the repo did not fully fit. One cause, one remedy.
 const ceilingReached = scoutDropped.length > 0
 const suggestedNextAction = ceilingReached
-  ? `Coverage is partial: ${scoutDropped.length} path(s) exceeded the ${MAX_AREAS}-area ceiling and were not reviewed. Re-run with a higher cap (args.areas: ${MAX_AREAS * 2}) or scope follow-up runs to the leftover with args.path. Uncovered: ${scoutDropped.join(', ')}.`
+  ? `Coverage is partial: ${scoutDropped.length} path(s) did not fit the ${MAX_AREAS}-area ceiling. Re-run with a higher cap (args.areas: ${MAX_AREAS * 2}) or scope follow-up runs to the leftover with args.path. Uncovered: ${scoutDropped.join(', ')}.`
   : ''
 
 phase('Consolidate')
@@ -208,7 +217,9 @@ const coverageNote =
   (workersFailed.length
     ? ` These workers did not return, so their scope is NOT covered: ${workersFailed.join(', ')}.`
     : '') +
-  (ceilingReached ? ` COVERAGE IS PARTIAL. ${suggestedNextAction}` : '')
+  // Gate on any dropped path (union of self-drop and overflow), not only
+  // ceilingReached, so self-drop cases are also surfaced to the critic.
+  (scoutDropped.length ? ` COVERAGE IS PARTIAL. ${suggestedNextAction}` : '')
 
 const report = await agent(
   `You are the senior reviewer consolidating a full-codebase review. The workers below produced the raw findings.${coverageNote}\n\nVerify each finding against the actual code, drop false positives and anything out of scope, merge duplicates (including the same problem found in two areas), and set a final severity. You may add a finding only if it is a clear must-fix the workers missed. Only must-fix findings block: verdict is changes-requested if any remain, approve otherwise. Record every dropped finding under dismissed with the reason.\n\nThen write the report file. Run \`date +%F\` for today's date, make the reviews/ directory if it does not exist, and write reviews/<date>-codebase-review.md with: the verdict and summary first; then, if coverage is partial, a prominent "Coverage: PARTIAL" callout immediately after the verdict that states how many paths were not reviewed and the suggested next action; then the must-fix, should-fix, and nit findings grouped by area; then a final "Coverage" section listing the areas reviewed, the paths not covered, the workers that failed, and (if partial) the suggested next action. Set reportPath to the file you wrote.\n\nReturn the structured summary. Set coverage.areasReviewed to ${JSON.stringify(reviewedAreas)}, coverage.areasDropped to ${JSON.stringify(scoutDropped)}, coverage.workersFailed to ${JSON.stringify(workersFailed)}, coverage.ceilingReached to ${ceilingReached}, and coverage.suggestedNextAction to ${JSON.stringify(suggestedNextAction)}.\n\nRaw findings (JSON):\n${JSON.stringify(raw, null, 2)}`,
