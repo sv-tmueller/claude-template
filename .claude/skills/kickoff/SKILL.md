@@ -26,13 +26,13 @@ For each issue, `gh issue view <n> --comments`, and
   already exists, then report it to the user.
 - Resume detection: an issue with an open PR or the `in-progress` label is
   resumed, not restarted. A ready (non-draft) open PR means the package is
-  complete: report it as awaiting merge and skip it. Otherwise read the
-  sub-plan comment and the PR comments (verdicts and fix rounds live there)
-  to find the stage it stopped at, and re-enter there; re-enter at the
-  tester only when the stage cannot be determined from the PR comments. If
-  the issue carries `in-progress` but has no open PR and no branch on origin,
-  clear the label and restart from the developer stage. Skip the architect
-  when a sub-plan comment exists.
+  complete: report it as awaiting merge and skip it. If the issue carries
+  `in-progress` but has no open PR and no branch on origin, clear the label
+  and restart from the developer stage. Otherwise (a PR or branch exists)
+  read the sub-plan comment and the PR comments (verdicts and fix rounds live
+  there) to find the stage it stopped at, and re-enter there; re-enter at
+  the tester only when the stage cannot be determined from the PR comments.
+  Skip the architect when a sub-plan comment exists.
 - Dependencies: parse literal `Blocked by: #N` lines in issue bodies. An
   issue whose blocker is not merged waits for a later wave.
 
