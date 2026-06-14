@@ -228,6 +228,7 @@ docs/
   architecture/      stack and policy decisions, data model, domain math (see NEW-PROJECT-SETUP)
   operations/        run/deploy/operate: environments, CI/CD, runbooks (see NEW-PROJECT-SETUP)
   plans/             implementation plans, <issue-number>-<slug>.md
+  reviews/           dated codebase-review reports from /tm-review-codebase
   superpowers/specs/ approved designs, YYYY-MM-DD-<topic>-design.md
 e2e/                 end-to-end tests; structure depends on the app (see NEW-PROJECT-SETUP)
 ```
