@@ -1,7 +1,8 @@
 .DS_Store
 .claude/settings.local.json
 .env
-.env.local
-.env*.local
+.env.*
+!.env.example
+!.env.sample
 
 # Review reports under docs/reviews/ are tracked documentation; do not add reviews/ here.
