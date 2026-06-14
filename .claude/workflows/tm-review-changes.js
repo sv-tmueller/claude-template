@@ -21,7 +21,7 @@ export const meta = {
 // contains shell metacharacters. Protects both the git command string and the
 // agent prompts that interpolate the value.
 function safeRef(value, fallback) {
-  return typeof value === 'string' && /^[\w.~^\/\-]+$/.test(value) ? value : fallback
+  return typeof value === 'string' && /^[\w.~^\/\-]+$/.test(value) && !value.includes('..') ? value : fallback
 }
 const base = safeRef(args && args.base, 'origin/main')
 
