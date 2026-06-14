@@ -3,3 +3,5 @@
 .env
 .env.local
 .env*.local
+
+# Review reports under docs/reviews/ are tracked documentation; do not add reviews/ here.
