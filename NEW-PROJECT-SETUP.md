@@ -37,6 +37,7 @@ GitHub template (or copy the whole tree, including `.claude/`) and fill in the
   docs/architecture/
   docs/operations/
   docs/plans/
+  docs/reviews/
   docs/superpowers/specs/
   ```
 - [ ] Add the first architecture note under `docs/architecture/` (stack and policy

@@ -3,6 +3,13 @@
 Date: 2026-06-13
 Status: approved (brainstorming), ready for implementation plan
 
+> **Amendment 2026-06-14:** the report is tracked, not gitignored. The original
+> plan (#37) classed it as a generated build artifact and ignored `reviews/`; that
+> call is reversed. A codebase-review report is documentation, so it is written to
+> `docs/reviews/` and committed, and the audit history stays part of the record.
+> The "Report contract" path below is updated to match; the original reasoning is
+> preserved in plan #37 as the point-in-time record.
+
 ## Context
 
 `/review-changes` reviews the branch diff: a fixed set of Sonnet workers, one per
@@ -133,7 +140,7 @@ The architecture worker covers the whole-repo concerns a diff cannot show:
 
 ## Report contract
 
-The critic writes `reviews/<YYYY-MM-DD>-codebase-review.md`, grouped by severity
+The critic writes `docs/reviews/<YYYY-MM-DD>-codebase-review.md`, grouped by severity
 then area, ending with a coverage section that lists areas reviewed, areas
 dropped by the cap, and any worker that failed to return. The chat shows a short
 verdict and summary plus the report path.

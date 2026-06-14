@@ -8,6 +8,13 @@
 
 **Tech Stack:** Claude Code Workflow runtime (plain JS, ESM-style `export const meta` plus a top-level `return`). Models pinned in-script (Sonnet workers, Opus critic). No external dependencies. Spec: `docs/superpowers/specs/2026-06-13-review-codebase-design.md`.
 
+> **Amendment 2026-06-14 (supersedes the gitignore decision below):** review
+> reports are tracked documentation, not build output. The `.gitignore` step in
+> "File structure" and the rationale for ignoring `reviews/` further down are
+> reversed: the report is written to `docs/reviews/` and committed, so the audit
+> history stays in the record. The original text is left in place below as the
+> point-in-time record of what was decided and why.
+
 ---
 
 ## Design updates after planning
