@@ -43,10 +43,10 @@ const opts = parseArgs(args)
 // metacharacters. Protects both the git command string and the agent prompts
 // that interpolate the value.
 function safeRef(value, fallback) {
-  return typeof value === 'string' && /^[\w.~^\/\-]+$/.test(value) ? value : fallback
+  return typeof value === 'string' && /^[\w.~^\/\-]+$/.test(value) && !value.includes('..') ? value : fallback
 }
 const root = safeRef(opts.path, '.')
-const MAX_AREAS = opts.areas || 24
+const MAX_AREAS = Number.isInteger(opts.areas) && opts.areas > 0 ? opts.areas : 24
 
 const FINDING = {
   type: 'object',
