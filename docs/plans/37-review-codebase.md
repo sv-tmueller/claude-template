@@ -45,7 +45,7 @@ The authoritative test is a live run, the same gate `tm-review-changes` and the 
 - ~~Modify: `.gitignore` - ignore generated `reviews/` output.~~ (Reversed by Amendment 2026-06-14: reports are tracked documentation committed to `docs/reviews/`.)
 - No change needed: `.claude/skills/tm-sync-template/SKILL.md` already copies `.claude/workflows/`, so the new workflow propagates to downstream repos automatically.
 
-## Conventions to match (from review-changes.js)
+## Conventions to match (from tm-review-changes.js)
 
 - `export const meta` with `name`, `description`, and a `phases` array; each phase carries `title`, `detail`, and `model`.
 - Schemas are plain JSON Schema objects with `additionalProperties: false` and explicit `required`.

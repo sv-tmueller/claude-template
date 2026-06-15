@@ -80,7 +80,7 @@ The advisor proposes fewer when the need is small.
 
 At batch end the advisor posts the report to the batch issue and the chat
 digest, then it is done for that session (a session cannot watch PRs across
-turns). When the user merges and re-invokes `/advisor` with no arguments, it
+turns). When the user merges and re-invokes `/tm-advisor` with no arguments, it
 reads the batch issue, confirms the PRs merged, closes the batch issue, and
 proposes the next batch from the backlog (open issues not part of any batch -
 no `Part of batch #` line and no `Batch:` title prefix - ordered by dependency

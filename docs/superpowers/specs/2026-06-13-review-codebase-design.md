@@ -21,7 +21,7 @@ auditing an inherited or drifting repo, a pre-release sweep, or finding latent
 defects and structural problems that no recent diff would surface.
 
 A naive "review everything" is unbounded. A whole repo does not fit one agent's
-context, and the dimension-per-worker shape of review-changes does not scale (a
+context, and the dimension-per-worker shape of tm-review-changes does not scale (a
 single "bugs" worker cannot read an entire repo). This workflow ships in the
 template and runs in downstream repos of unknown size, so the bound has to hold
 regardless of how large the target repo is.
@@ -46,7 +46,7 @@ regardless of how large the target repo is.
 
 Three choices were settled during brainstorming:
 
-1. Focus: both defects and structure (not just the review-changes lens, not
+1. Focus: both defects and structure (not just the tm-review-changes lens, not
    structure-only).
 2. Bounding: a scout maps the repo into a capped set of areas; one worker reviews
    each area in depth, plus one dedicated worker audits repo-wide structure.
@@ -114,11 +114,11 @@ areas, the leftover is reported, not silently skipped: `coverage.ceilingReached`
 is set, `coverage.areasDropped` lists the uncovered paths, and
 `coverage.suggestedNextAction` tells the caller to re-run with a higher `areas`
 cap or a scoped `path`. This is the same no-silent-truncation discipline as the
-review-changes coverage fix.
+tm-review-changes coverage fix.
 
 ## What each reviewer looks for
 
-Area workers reuse the five review-changes dimensions, worded for whole files
+Area workers reuse the five tm-review-changes dimensions, worded for whole files
 rather than a diff, reusing the existing briefs where possible for consistency:
 
 - bugs (adversarial correctness, edge cases, error paths, races, resource leaks)
@@ -146,9 +146,9 @@ ending with a coverage section that lists areas reviewed, areas dropped by the
 cap, and any worker that failed to return. The chat shows a short verdict and
 summary plus the report path.
 
-The finding shape reuses the review-changes `FINDING` (file, line, severity,
+The finding shape reuses the tm-review-changes `FINDING` (file, line, severity,
 problem, fix) and adds `area` and `dimension`. The returned summary reuses the
-review-changes `REPORT_SCHEMA` shape (verdict, summary, mustFix, shouldFix, nits,
+tm-review-changes `REPORT_SCHEMA` shape (verdict, summary, mustFix, shouldFix, nits,
 dismissed) and adds a `coverage` object (areas reviewed, areas dropped,
 `ceilingReached`, `suggestedNextAction`, failed workers) and `reportPath`.
 
