@@ -16,6 +16,10 @@ none exists, ask for the need.
 
 ## 1. Refine
 
+All clarifying questions live here. Ask them now; the run that follows is
+unattended. Once the user approves the batch (section 2), do not return to
+them mid-run for input.
+
 Depth is proportional to the need:
 
 - Small and concrete (a bug list, a mechanical change): a few clarifying
@@ -63,6 +67,10 @@ On approval:
 
 ## 4. Run
 
+Do not ask the user questions mid-run. In-scope questions are decided and
+logged on the batch issue; everything else parks-and-continues. Interrupt the
+user only if every package parks at once.
+
 Run the packages through the kickoff per-package pipeline
 (`.claude/skills/tm-kickoff/SKILL.md`): at most 3 concurrent, starting the next
 queued package as one finishes. Skip kickoff's wave-plan confirmation; the
@@ -87,9 +95,20 @@ in three ways:
 
 When every package is ready or parked, post the report to the batch issue:
 PRs ready for review, every decision made during the run, parked packages
-with their open questions, and anything deferred. Give the user the same as
-a chat digest, ending with: "merge these PRs, then invoke /tm-advisor again to
-close this batch and propose the next one."
+with their open questions, and anything deferred. End both the batch-issue
+report and the chat digest with:
+
+```
+## What happened
+- PR #NN ready  - <package title>
+- PR #NN ready  - <package title>
+- #NN parked (needs-human): <the open question>
+
+## Next steps
+1. Review & merge: #NN, #NN
+2. Decide on #NN (retry or close)
+3. Run /tm-advisor to close this batch and propose the next
+```
 
 After posting, the advisor is done for this session.
 
@@ -109,15 +128,38 @@ With no arguments, `/tm-advisor` enters the resume path:
 4. If all packages are ready or parked: first make sure the report has been
    posted to the batch issue (if the run ended before the report step above
    ran, post it now), then check for unresolved parked packages. If any
-   package still carries `needs-human`, list them and stop. Do not close the
-   batch issue until every package either has a merged PR or no longer blocks
-   closure. A parked package stops blocking closure once it no longer carries
-   `needs-human` (the user removed the label or closed the issue). Once every
-   package has a merged PR or has cleared that label, confirm merges: for each
-   PR number recorded in the batch checklist, run `gh pr view <n> --json state`
-   and verify the state is `MERGED`. If any PR is not yet merged, report which
-   ones are outstanding and stop. When all PRs are confirmed merged, close the
-   batch issue and propose the next batch (see below).
+   package still carries `needs-human`, list them and stop:
+
+   ```
+   ## What happened
+   - PR #NN ready  - <package title>
+   - #NN parked (needs-human): <the open question>
+
+   ## Next steps
+   1. Resolve or close: #NN, #NN
+   2. Run /tm-advisor to continue
+   ```
+
+   Do not close the batch issue until every package either has a merged PR or
+   no longer blocks closure. A parked package stops blocking closure once it
+   no longer carries `needs-human` (the user removed the label or closed the
+   issue). Once every package has a merged PR or has cleared that label,
+   confirm merges: for each PR number recorded in the batch checklist, run
+   `gh pr view <n> --json state` and verify the state is `MERGED`. If any PR
+   is not yet merged, report which ones are outstanding and stop:
+
+   ```
+   ## What happened
+   - PR #NN ready  - <package title>
+   - PR #NN ready  - <package title>
+
+   ## Next steps
+   1. Merge the outstanding PRs: #NN, #NN
+   2. Run /tm-advisor to continue
+   ```
+
+   When all PRs are confirmed merged, close the batch issue and propose the
+   next batch (see below).
 
    At closure, strip the `Part of batch #<batch>` line from any parked issues
    that were not resolved (the ones the user dismissed rather than merged).
@@ -136,4 +178,12 @@ remainder first by dependency (issues with unresolved `Blocked by:` lines come
 after the issues they depend on) and then by creation date (oldest first).
 Present the highest-priority candidates as the next batch proposal, following
 the same rules as section 2. Dispatch always requires a new sign-off; merging
-is never implicit approval.
+is never implicit approval. End the proposal with:
+
+```
+## What happened
+- Batch #NN closed. All PRs merged.
+
+## Next steps
+1. Approve the proposed batch above to dispatch
+```
