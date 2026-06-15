@@ -46,10 +46,15 @@ For each issue, `gh issue view <n> --comments`, and
 Wave 1 is the issues with no open blockers; wave 2 is the issues blocked only
 by wave 1, and so on. Present the plan (issues, sizes, parallelism, expected
 PRs) and stop for the user's confirmation. This is the only confirmation in a
-run; after it, run the wave unattended. Inside an /tm-advisor batch the batch
-sign-off replaces this confirmation; do not ask twice.
+run; after it, run the wave unattended with no questions to the user mid-run.
+Inside an /tm-advisor batch the batch sign-off replaces this confirmation; do
+not ask twice.
 
 ## 3. Per-package pipeline
+
+The run does not stop to ask the user. In-scope questions are decided and
+logged; everything else parks-and-continues. Interrupt the user only if every
+package parks at once.
 
 Run up to 3 packages concurrently; dispatch their agents in parallel. A
 larger queue (up to 6 inside an /tm-advisor batch) starts the next package as
@@ -149,5 +154,16 @@ lead's checkout is left on the default branch with a clean tree.
 
 Report to the user: PRs ready for review, packages parked (`needs-human`,
 with their open questions), and issues deferred to later waves or stopped at
-the gate. The next wave needs this wave merged, and merging is the user's to
-do, so end with: "merge these PRs, then run /tm-kickoff again."
+the gate. End with:
+
+```
+## What happened
+- PR #NN ready  - <package title>
+- PR #NN ready  - <package title>
+- #NN parked (needs-human): <the open question>
+
+## Next steps
+1. Review & merge: #NN, #NN
+2. Decide on #NN (retry or close)
+3. Run /tm-kickoff to start the next wave
+```
