@@ -106,10 +106,46 @@ Routing rules:
 - Inside an /tm-advisor batch, mirror lead decisions and package outcomes
   (PR ready, parked) to the batch tracking issue as they happen.
 
+## Worktree cleanup (deterministic)
+
+The `developer` and `tester` run with Agent `isolation: worktree`, but the
+isolation does not reliably separate the working tree: a dispatched agent's
+`git checkout`/`git switch` can land on the lead's shared checkout. That is the
+mechanical cause of the tangle, and it hits every checkout-running agent, not
+just one (observed live on issue #78: the `tester`'s `git checkout --detach
+FETCH_HEAD` left the lead's checkout detached at the branch tip). The agents
+publish to origin, so their work is safe there regardless; what leaks into the
+lead's checkout is a moved HEAD, sometimes a local branch, and a worktree
+registered under `.claude/worktrees/`. The `developer` fresh path uses a
+detached checkout instead of `git switch -c`, so it no longer leaves a stale
+local branch (the worst residue, a clobber risk against the good remote branch);
+the moved HEAD and the registered worktree are harness-side and cannot be
+prevented by agent commands, so the lead reverses them deterministically.
+
+At wave end, with no agents in flight, run from the lead's main checkout:
+
+```
+git worktree prune                 # safe anytime; drops entries for gone worktrees
+git worktree list                  # expect only the main repo
+git status --short --branch        # expect the default branch, clean tree
+```
+
+Remove anything still registered under `.claude/worktrees/`
+(`git worktree remove --force <path>`). If the lead's HEAD was moved off the
+default branch, return to it with `git switch <default>` (the lead's own checkout, the one
+place that command is right). Delete a stray local
+package branch only when its work is safe on origin (`git ls-remote --exit-code
+origin <branch>` succeeds), then `git branch -D <branch>`; never delete a branch
+whose commits are not on origin. Do not run `remove` or `branch -D` mid-wave:
+they must not touch a worktree another concurrent package is still using.
+
 ## 4. Wave end
 
 Definition of done per package: last tester verdict is PASS, reviewer
 APPROVE, PR ready with `Closes #N`, summary comment posted.
+
+Before reporting, run the worktree cleanup above (no agents in flight) so the
+lead's checkout is left on the default branch with a clean tree.
 
 Report to the user: PRs ready for review, packages parked (`needs-human`,
 with their open questions), and issues deferred to later waves or stopped at
