@@ -217,7 +217,7 @@ issue, with the sub-plan comment standing in for step 5's full plan (see
 ```
 .claude/
   agents/            role agents: architect, developer, tester, reviewer
-  skills/            project skills: /tm-advisor, /tm-grill-me, /tm-kickoff, /tm-sync-template, /tm-to-issues
+  skills/            project skills: /tm-advisor, /tm-grill-me, /tm-install-team, /tm-kickoff, /tm-sync-template, /tm-to-issues
   workflows/         bounded orchestration scripts (tm-review-changes, tm-review-codebase)
   settings.json      project settings; enables the superpowers plugin
                        enabledPlugins is template-managed (synced by /tm-sync-template);
