@@ -34,8 +34,8 @@ hidden assumptions, cheaper alternatives, and conflicts with
 
 Slice the need into independent `size:S` or `size:M` packages. If the user
 hands over a ready-made package labelled `size:L` or `size:XL`, reject it
-before sign-off and ask to split it first - a single oversized package risks
-hitting the session limit mid-task. No `Blocked by:` between packages in the
+before sign-off and ask to split it first (a single oversized package risks
+hitting the session limit mid-task). No `Blocked by:` between packages in the
 same batch; dependent work waits for a later batch, after the user has merged
 this one. Up to 6 packages per batch; propose fewer when the need is small.
 If the need exceeds one batch, say what is deferred to the next batch and why.
@@ -109,14 +109,15 @@ With no arguments, `/tm-advisor` enters the resume path:
 4. If all packages are ready or parked: first make sure the report has been
    posted to the batch issue (if the run ended before the report step above
    ran, post it now), then check for unresolved parked packages. If any
-   package still carries `needs-human`, list them and stop - do not close the
-   batch issue until the user has either dismissed each one or its PR has been
-   merged. Once every package has a merged PR or the user explicitly dismisses
-   the parked ones, confirm merges: for each PR number recorded in the batch
-   checklist, run `gh pr view <n> --json state` and verify the state is
-   `MERGED`. If any PR is not yet merged, report which ones are outstanding
-   and stop. When all PRs are confirmed merged, close the batch issue and
-   propose the next batch (see below).
+   package still carries `needs-human`, list them and stop. Do not close the
+   batch issue until every package either has a merged PR or no longer blocks
+   closure. A parked package stops blocking closure once it no longer carries
+   `needs-human` (the user removed the label or closed the issue). Once every
+   package has a merged PR or has cleared that label, confirm merges: for each
+   PR number recorded in the batch checklist, run `gh pr view <n> --json state`
+   and verify the state is `MERGED`. If any PR is not yet merged, report which
+   ones are outstanding and stop. When all PRs are confirmed merged, close the
+   batch issue and propose the next batch (see below).
 
    At closure, strip the `Part of batch #<batch>` line from any parked issues
    that were not resolved (the ones the user dismissed rather than merged).
