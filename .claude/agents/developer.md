@@ -27,14 +27,18 @@ local default branch, which may be stale, so orient first:
      ```
 
      If `ls-remote` finds no ref, stop and report `NEEDS_CONTEXT`; do not detach.
-   - Fresh package (no branch on origin): check out the resolved base detached,
-     so no local branch ref is created and no shared HEAD moves. The base is
-     `origin/main`, and the eventual branch (`feat/<n>-<slug>`, or `fix/` for
-     bug fixes, per CLAUDE.md branch naming) is created on origin by the push
-     refspec below, never locally. If the default branch is not `main`, run
-     `git remote set-head origin --auto` and use `origin/HEAD`; if that cannot
-     resolve (for example a network error), fall back to `origin/main` and note
-     the deviation in your report:
+   - Fresh package (no branch on origin): first confirm the branch really is
+     absent on origin (`git ls-remote --exit-code origin <branch>`), so a
+     leftover from a crashed run is not silently overwritten by the push below.
+     If the ref is found, stop and report `NEEDS_CONTEXT`: a prior run pushed
+     this branch, so it is a resume, not a fresh start. If it is absent, check
+     out the resolved base detached, so no local branch ref is created and no
+     shared HEAD moves. The base is `origin/main`, and the eventual branch
+     (`feat/<n>-<slug>`, or `fix/` for bug fixes, per CLAUDE.md branch naming)
+     is created on origin by the push refspec below, never locally. If the
+     default branch is not `main`, run `git remote set-head origin --auto` and
+     use `origin/HEAD`; if that cannot resolve (for example a network error),
+     fall back to `origin/main` and note the deviation in your report:
 
      ```
      git checkout --detach origin/main   # origin/HEAD when the default is not main
