@@ -10,8 +10,8 @@ GitHub template (or copy the whole tree, including `.claude/`) and fill in the
 - [ ] Protect `main`: block direct pushes, require a PR, require status checks to
       pass before merge.
 - [ ] Create the labels the workflow uses: the sizing set `size:S`, `size:M`,
-      `size:L`, `size:XL` (see CLAUDE.md "Sizing") plus `in-progress` and
-      `needs-human` (see CLAUDE.md "Agent team").
+      `size:L`, `size:XL` (see team-guide.md "Sizing") plus `in-progress` and
+      `needs-human` (see team-guide.md "Agent team").
 - [ ] (Optional) Create the labels you will filter on, e.g. `phase:0`, `phase:1`,
       `type:feat`, `type:fix`.
 
@@ -24,15 +24,7 @@ GitHub template (or copy the whole tree, including `.claude/`) and fill in the
 - [ ] Check the agent team is loaded: `/agents` should list architect,
       developer, tester, and reviewer.
 - [ ] Check the skills are registered: `/skills` should list tm-advisor,
-      tm-kickoff, tm-grill-me, tm-to-issues, and tm-sync-template.
-- [ ] Stamp the template version, so `/tm-sync-template` can apply future
-      template updates incrementally:
-      ```
-      gh api repos/sv-tmueller/claude-template/commits/main --jq .sha > .claude/template-version
-      ```
-      Commit the file. (The file ships as `unknown` in the template; that is
-      intentional - `/tm-sync-template` treats any non-SHA value as an unknown
-      base and prompts for a conservative merge until you stamp it here.)
+      tm-kickoff, tm-grill-me, tm-to-issues, and tm-install-team.
 - [ ] (Optional) If this project builds UI, enable the design plugins. They are
       not on by default, so the template stays generic and free of third-party
       defaults. Add each to `.claude/settings.json` under `enabledPlugins` and
@@ -76,8 +68,7 @@ GitHub template (or copy the whole tree, including `.claude/`) and fill in the
 
 - [ ] Fill "What this repo is" (what, who, status).
 - [ ] Fill "Useful commands" with the real install/dev/test/lint/e2e commands.
-- [ ] Tailor "Code style" and "What not to do" to this project; delete the rest.
-- [ ] Confirm "Workflow defaults" still match how you want to work here.
+- [ ] Tailor "Code style" to this project; delete the placeholder line.
 
 ## 6. First slice of work
 
@@ -87,4 +78,4 @@ GitHub template (or copy the whole tree, including `.claude/`) and fill in the
       lines for dependencies.
 - [ ] For a single issue: post a short sub-plan on the issue, branch, open a
       draft PR (`Closes #N`), then expand it to a full plan in `docs/plans/`.
-- [ ] For a batch of refined issues: run `/tm-kickoff` (see CLAUDE.md "Agent team").
+- [ ] For a batch of refined issues: run `/tm-kickoff` (see team-guide.md "Agent team").
