@@ -31,7 +31,7 @@ ready-made agent team for Claude Code.
 - `.claude/skills/tm-install-team/` - `/tm-install-team`: installs or updates the
   team into one or more user config dirs (`/tm-install-team ~/.claude-personal
   ~/.claude-work`), so it is available in every repo under that config without
-  being committed anywhere. Copies the operational skills, agents, and
+  being committed anywhere. Copies the operational skills, agents,
   workflows, and `team-guide.md`, and checks superpowers is enabled. The user-scope path for repos
   you do not want to carry the team (an org repo).
 - `.claude/workflows/` - bounded orchestration scripts. `tm-review-changes`
