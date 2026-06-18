@@ -50,6 +50,7 @@ docs/
   plans/             implementation plans, <issue-number>-<slug>.md
   reviews/           dated codebase-review reports from /tm-review-codebase
   superpowers/specs/ approved designs, YYYY-MM-DD-<topic>-design.md
+  team-architecture.md  flat-star agent-team diagrams and rationale
 e2e/                 end-to-end tests; structure depends on the app (see NEW-PROJECT-SETUP)
 ```
 

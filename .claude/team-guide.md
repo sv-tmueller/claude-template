@@ -84,7 +84,8 @@ The template ships four role agents in `.claude/agents/` and a set of skills.
 The lead is the main session: subagents cannot call each other, so the
 session running `/tm-kickoff` routes every handoff, and GitHub (sub-plan and
 verdict comments, draft PRs, labels) holds the state that makes a dropped
-session resumable.
+session resumable. A diagram of this flat-star model and the per-package
+pipeline lives in `docs/team-architecture.md`.
 
 - `architect` - advisory, read-only: sub-plans, split proposals, arbitration.
 - `developer` - one issue end to end in an isolated worktree.
