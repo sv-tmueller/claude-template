@@ -4,6 +4,12 @@ How the orchestrator team actually runs. The operating rules live in
 `.claude/team-guide.md`; this doc adds the picture. The per-package mechanics
 (parking, caps, routing) live in `.claude/skills/tm-kickoff/SKILL.md`.
 
+"Agent team" is this template's name for the flat-star pattern below, not
+Claude Code's experimental agent-teams feature (enabled with
+`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`), where separate full sessions
+coordinate peer-to-peer. Ours is built from subagents and dynamic workflows:
+the lead spawns role agents that report back to it and never call each other.
+
 ## Flat star, not a nested tree
 
 Claude Code now lets a subagent spawn its own subagents (a nested tree; the
