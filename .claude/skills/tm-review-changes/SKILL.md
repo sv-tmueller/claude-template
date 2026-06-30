@@ -17,10 +17,10 @@ Input: $ARGUMENTS (an optional base ref, default `origin/main`).
 1. Check whether you are running from a plugin install: `echo "$CLAUDE_PLUGIN_ROOT"`.
 2. If `CLAUDE_PLUGIN_ROOT` is set (non-empty), invoke the Workflow tool with
    `scriptPath` set to
-   `${CLAUDE_PLUGIN_ROOT}/.claude/workflows/tm-review-changes.js` and
-   `args: { base: <the base ref> }`. The path includes `.claude/` because
-   files are not moved for the plugin; `source: "./"` in `marketplace.json`
-   makes the plugin root a copy of the whole repo, workflows included.
+   `${CLAUDE_PLUGIN_ROOT}/workflows/tm-review-changes.js` and
+   `args: { base: <the base ref> }`. No `.claude/` segment: `source:
+   "./.claude"` in `marketplace.json` makes the plugin root `.claude/` itself,
+   so `workflows/` sits directly under `CLAUDE_PLUGIN_ROOT`.
 3. Otherwise, invoke the Workflow tool with `name: "tm-review-changes"` and
    `args: { base: <the base ref> }`, which resolves the saved workflow at
    `.claude/workflows/tm-review-changes.js` the normal way.

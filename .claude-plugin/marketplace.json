@@ -7,7 +7,7 @@
   "plugins": [
     {
       "name": "quinnslab",
-      "source": "./",
+      "source": "./.claude",
       "description": "Orchestrator team: 4 role agents, the tm- operational skills, and the review workflows."
     }
   ]
