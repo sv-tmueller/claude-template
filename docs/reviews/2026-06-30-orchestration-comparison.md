@@ -69,12 +69,12 @@ enforces. The Workflow runtime supports per-stage model overrides (an
 stages); an ultracode-authored workflow could set it. Per
 `.claude/team-guide.md`'s Model-policy section, it simply does not by
 default: as a session setting, ultracode "has Claude plan a dynamic workflow
-for every substantial task, chaining several per request," and "the
+for every substantive task, chaining several per request," and "the
 workflows it invents have no per-stage model pinning, so their stages run on
-the session model." There is also no script-level cap on how many workflows
-chain. Both are observed default-authoring tendencies, the same epistemic
-category as the Sonnet-5 spawning question below, not structural guarantees
-the way the team pipeline's pinning is.
+whichever model is leading the session." There is also no script-level cap
+on how many workflows chain. Both are observed default-authoring
+tendencies, the same epistemic category as the Sonnet-5 spawning question
+below, not structural guarantees the way the team pipeline's pinning is.
 
 ## What is new here: the judgment-escalation asymmetry
 
@@ -117,11 +117,12 @@ Two questions this report cannot answer from documentation or code alone:
   caught) depends on a task large enough to actually need multi-stage
   orchestration. The current backlog has no such task: the open-issue list
   is otherwise empty, and the findings in
-  `docs/reviews/2026-06-30-codebase-review.md` read as small, single-location
-  fixes (the one filed so far, #125, is size:S), not the kind of
-  multi-stage work that would exercise orchestration choices. A live
-  comparison run today would measure the case where the
-  two modes barely differ, not the case the question is actually about.
+  `docs/reviews/2026-06-30-codebase-review.md` (PR #126, a sibling of this
+  one under batch #122) read as small, single-location fixes (the one filed
+  so far, #125, is size:S), not the kind of multi-stage work that would
+  exercise orchestration choices. A live comparison run today would measure
+  the case where the two modes barely differ, not the case the question is
+  actually about.
 
 For reference, one real data point on the bounded side exists from today's
 session: the `tm-review-codebase` run that produced
