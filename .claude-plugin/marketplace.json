@@ -1,5 +1,6 @@
 {
   "name": "claude-template",
+  "description": "Single-plugin marketplace for the quinnslab orchestrator team.",
   "owner": {
     "name": "Thomas Mueller"
   },

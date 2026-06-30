@@ -43,6 +43,9 @@ ready-made agent team for Claude Code.
 - `.claude/settings.json` - enables obra's superpowers plugin per project
   (`superpowers@claude-plugins-official`; the methodology skills:
   brainstorming, writing-plans, TDD, verification).
+- `.claude-plugin/` - the plugin manifest and marketplace catalog that let the
+  team install as `quinnslab@claude-template` (see "Getting the team into
+  your repos" below).
 
 Generalized from two project `CLAUDE.md` files (a Python advisory bot and a
 TypeScript web app), keeping the shared backbone and dropping the project
@@ -64,7 +67,7 @@ Copying only `CLAUDE.md` works but does not carry the agents and skills, and lea
 
 ## Getting the team into your repos
 
-Two ways, depending on whether the team should be committed to the repo.
+Three ways, depending on whether the team should be committed to the repo.
 
 **User scope (recommended), nothing committed.** Install the team into your
 Claude Code config dir(s) once and it is available in every repo you open under
@@ -90,6 +93,32 @@ committed team overrides the user-scope copy, so the two never clash.
 in `.claude/`. To update it after a `git pull` on the template, copy the
 updated files manually from the template checkout into the repo's `.claude/`
 and open a PR.
+
+**Plugin install, via the marketplace.** This repo is also a single-plugin
+marketplace (`.claude-plugin/marketplace.json`), so any machine with Claude
+Code can install the team without cloning or copying anything:
+
+```text
+/plugin marketplace add sv-tmueller/claude-template
+/plugin install quinnslab@claude-template
+```
+
+This installs the 4 agents and the operational skills under the `quinnslab`
+namespace, for example `/quinnslab:tm-advisor` and `/quinnslab:tm-kickoff`.
+The two review workflows (`tm-review-changes`, `tm-review-codebase`) ship as
+thin wrapper skills, since a plugin does not auto-register `workflows/`.
+`tm-install-team` is a template-maintenance command for this repo's own
+checkout, so it is left out of the plugin's skill set.
+
+A plugin cannot install another plugin for you: the `developer` and `tester`
+agents and `tm-advisor` depend on obra's superpowers plugin, so enable it
+yourself first if it is not already, the same prerequisite `/tm-install-team`
+documents for the user-scope path above:
+
+```text
+/plugin marketplace add anthropics/claude-plugins-official
+/plugin install superpowers@claude-plugins-official
+```
 
 ## License
 
