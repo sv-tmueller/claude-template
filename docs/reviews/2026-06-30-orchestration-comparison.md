@@ -19,6 +19,13 @@ conservative default under uncertainty, not a proven conclusion: the
 recommendation below is provisional and should be revisited once real data
 exists (see the appendix).
 
+This report does not argue for switching the lead model to Sonnet 5. The
+judgment-escalation asymmetry below explains why: the team pipeline's
+quality guarantee does not depend on the lead, but the lead's own judgment
+work does. Opus 4.8 remains the default lead per the existing policy. What
+follows applies only when Sonnet 5 leads for some other reason: a default
+change, lower cost, or faster turnaround.
+
 ## What this compares
 
 Two ways to run Sonnet 5 as this template's lead session:
@@ -101,6 +108,34 @@ using ultracode; the mechanism allows both. The asymmetry holds for the
 specific comparison this report scopes: Sonnet 5 leading, ultracode authoring
 with its observed default of not pinning, against the team pipeline as
 committed.
+
+## Corollary: the same argument favors keeping Opus as lead
+
+The asymmetry above answers "given Sonnet 5 leads, which orchestration mode
+is better." The same fact also answers a prior question: should the lead
+switch to Sonnet 5 at all. Since the team pipeline already routes
+judgment-heavy stages to Opus regardless of which model leads, switching the
+lead itself from Opus to Sonnet 5 buys no quality improvement on that work.
+The only place a lead-model choice has no offsetting structural guarantee is
+the lead's own judgment: refining an ambiguous request, scope and parking
+decisions during a kickoff or advisor run, and any work the lead does
+directly instead of delegating (this report and its policy edit, for
+instance, written by a Sonnet-5-led session rather than dispatched to a
+subagent).
+
+Cost cuts the other way. Sonnet 5 is cheaper per token than Opus 4.8 on the
+API: $3/$15 per million input/output tokens standard, $2/$10 introductory
+through 2026-08-31, against Opus 4.8's $5/$25 (checked against current API
+pricing on 2026-06-30). Whether that translates to a Claude Max-plan
+subscription is a separate, unverified question: the existing policy's
+"weighs less against Max-plan quota" claim for Opus is about subscription
+quota mechanics, not API pricing, and nothing in this report confirms or
+refutes it.
+
+Net: the judgment-escalation argument favors keeping Opus 4.8 as the
+default lead, the conclusion the existing policy already reaches. This
+report's scope stays narrower than that question; it covers only what to do
+once Sonnet 5 is already leading.
 
 ## What is genuinely unknown
 
