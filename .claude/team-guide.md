@@ -136,18 +136,31 @@ runs, not raw effort everywhere.
 - Orchestrator (the lead session, including `/tm-kickoff`): Opus 4.8 at max
   effort. Opus does not over-spawn under ultracode the way Fable 5 (`claude-fable-5`) does, and it
   weighs less against Max-plan quota. Keep the lead here.
-- `ultracode`: a per-prompt keyword, never a session-wide effort setting, and
-  not a substitute for the team machinery above. There is no `/ultracode` slash
-  command: it is either a keyword you type in a prompt or the `ultracode` option
-  in the `/effort` menu. As a session setting it sends `xhigh` reasoning (one
-  notch below `max` on Opus 4.8's `low < medium < high < xhigh < max` ladder) and
-  has Claude plan a dynamic workflow for every substantive task, chaining several
-  per request; as a keyword it scopes that orchestration to the one task you type
-  it on. The workflows it invents have no per-stage model pinning, so their stages
-  run on the session model (Opus), not the Sonnet workers the `tm-review-*`
-  scripts pin. Session-wide `ultracode` is therefore unbounded and buys less
-  reasoning than `max` for more cost: keep `/effort` at `max`, and use the keyword
-  only for a one-off heavy task with no tm- script. (Source:
+- Sonnet 5 as orchestrator (provisional): if the lead session runs Sonnet 5
+  instead of Opus 4.8, keep it on the team and workflow machinery at max
+  effort by default too, not session-wide ultracode. The team pipeline pins
+  judgment-heavy stages (architect, reviewer, and the critic stage in both
+  `tm-review-*` workflows) to Opus regardless of which model leads, so a
+  Sonnet-5-led run still gets Opus-quality review; a Sonnet-5-led ultracode
+  run does not escalate by default, since ultracode workflows do not pin
+  per-stage models unless told to. Whether Sonnet 5 also over-spawns under
+  ultracode the way Fable 5 does is untested. This default is provisional,
+  pending real data: see
+  `docs/reviews/2026-06-30-orchestration-comparison.md` for the reasoning and
+  a methodology to validate it.
+- `ultracode`: use it as a per-prompt keyword, not as a session-wide effort
+  setting, and not as a substitute for the team machinery above. There is no
+  `/ultracode` slash command: it is either a keyword you type in a prompt or
+  the `ultracode` option in the `/effort` menu. As a session setting it sends
+  `xhigh` reasoning (one notch below `max` on Opus 4.8's `low < medium < high
+  < xhigh < max` ladder) and has Claude plan a dynamic workflow for every
+  substantive task, chaining several per request; as a keyword it scopes that
+  orchestration to the one task you type it on. The workflows it invents have
+  no per-stage model pinning, so their stages run on whichever model is
+  leading the session, not the Sonnet workers the `tm-review-*` scripts pin.
+  Session-wide `ultracode` is therefore unbounded and buys less reasoning
+  than `max` for more cost on Opus: keep `/effort` at `max`, and use the
+  keyword only for a one-off heavy task with no tm- script. (Source:
   code.claude.com/docs/en/model-config.md, "Adjust effort level".)
 - Role agents (set in each agent's frontmatter `model:`): `developer` and
   `tester` run `sonnet` (efficient implementation and verification);
