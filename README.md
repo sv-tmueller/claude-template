@@ -43,9 +43,10 @@ ready-made agent team for Claude Code.
 - `.claude/settings.json` - enables obra's superpowers plugin per project
   (`superpowers@claude-plugins-official`; the methodology skills:
   brainstorming, writing-plans, TDD, verification).
-- `.claude-plugin/` - the plugin manifest and marketplace catalog that let the
-  team install as `quinnslab@claude-template` (see "Getting the team into
-  your repos" below).
+- `.claude-plugin/marketplace.json` - the marketplace catalog, pointing the
+  `quinnslab` plugin at the `.claude/` root. The plugin manifest itself lives
+  at `.claude/.claude-plugin/plugin.json` (see "Getting the team into your
+  repos" below).
 
 Generalized from two project `CLAUDE.md` files (a Python advisory bot and a
 TypeScript web app), keeping the shared backbone and dropping the project
@@ -103,12 +104,13 @@ Code can install the team without cloning or copying anything:
 /plugin install quinnslab@claude-template
 ```
 
-This installs the 4 agents and the operational skills under the `quinnslab`
-namespace, for example `/quinnslab:tm-advisor` and `/quinnslab:tm-kickoff`.
-The two review workflows (`tm-review-changes`, `tm-review-codebase`) ship as
-thin wrapper skills, since a plugin does not auto-register `workflows/`.
-`tm-install-team` is a template-maintenance command for this repo's own
-checkout, so it is left out of the plugin's skill set.
+This installs the 4 agents and all 7 skills under the `quinnslab` namespace,
+for example `/quinnslab:tm-advisor` and `/quinnslab:tm-kickoff`. The two
+review workflows (`tm-review-changes`, `tm-review-codebase`) ship as thin
+wrapper skills, since a plugin does not auto-register `workflows/`.
+`/quinnslab:tm-install-team` ships too (default-directory discovery does not
+exclude it) but is a no-op outside a checkout of this template: it has
+nothing to copy from.
 
 A plugin cannot install another plugin for you: the `developer` and `tester`
 agents and `tm-advisor` depend on obra's superpowers plugin, so enable it
