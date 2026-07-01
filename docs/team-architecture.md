@@ -30,12 +30,12 @@ resumability. Parallelism comes from worktree isolation, not nesting.
 ```mermaid
 graph TD
     H["Human<br/>files and sizes issues, merges PRs"] --> L
-    L["LEAD - main session<br/>message bus and router<br/>owns no code; durable state lives in GitHub"]
+    L["LEAD - main session (fable, max effort)<br/>message bus and router<br/>owns no code; durable state lives in GitHub"]
 
-    L -->|"JOB: SUB_PLAN / SPLIT / ARBITRATION"| A["architect (opus)<br/>read-only - approach, splits, arbitration"]
+    L -->|"JOB: SUB_PLAN / SPLIT / ARBITRATION"| A["architect (fable)<br/>read-only - approach, splits, arbitration"]
     L -->|"issue + sub-plan"| D["developer (sonnet)<br/>one issue end to end - worktree - TDD - draft PR"]
     L -->|"branch + issue"| T["tester (sonnet)<br/>read-only - re-runs suite, attacks change"]
-    L -->|"PR + issue + untested claims"| R["reviewer (opus)<br/>read-only - spec pass then quality pass"]
+    L -->|"PR + issue + untested claims"| R["reviewer (fable)<br/>read-only - spec pass then quality pass"]
 
     A -.->|"SUB_PLAN / NEEDS_DECISION"| L
     D -.->|"STATUS / BRANCH / PR / CHECKS"| L
