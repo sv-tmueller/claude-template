@@ -80,7 +80,7 @@ Standing preferences for this project:
 
 ## Agent team
 
-The template ships four role agents in `.claude/agents/` and a set of skills.
+The template ships five role agents in `.claude/agents/` and a set of skills.
 The lead is the main session: subagents cannot call each other, so the
 session running `/tm-kickoff` routes every handoff, and GitHub (sub-plan and
 verdict comments, draft PRs, labels) holds the state that makes a dropped
@@ -91,6 +91,12 @@ pipeline lives in `docs/team-architecture.md`.
 - `developer` - one issue end to end in an isolated worktree.
 - `tester` - independent verification on the branch, read-only.
 - `reviewer` - spec pass then quality pass, read-only.
+- `fact-checker` - audits the claims in a report or PR description against
+  reproducible evidence, read-only. Per-claim verdicts: VERIFIED with the
+  command that proves it, CONTRADICTED, UNVERIFIED, or LABELED (the author
+  marked it as an assumption). Dispatch it when a report's claims matter but
+  carry no evidence; a CONTRADICTED claim is never dropped, it goes back to
+  the agent that made it.
 
 Refine and size issues in discussion first (`/tm-grill-me` stress-tests the
 plan, `/tm-to-issues` turns it into sized issues); mark dependencies with a
@@ -165,10 +171,14 @@ else. The lever is where each model runs, not raw effort everywhere.
   "Adjust effort level".)
 - Role agents (set in each agent's frontmatter `model:`): `architect` and
   `reviewer` run `fable` (the plan/decision roles; `opus` is the documented
-  fallback); `developer` and `tester` run `sonnet`, which resolves to Sonnet
-  5 (code generation and verification are execution roles, not decision
-  roles). Subagents inherit the session's effort, so a max-effort lead gives
-  the judgment agents max effort too.
+  fallback); `developer`, `tester`, and `fact-checker` run `sonnet`, which
+  resolves to Sonnet 5 (code generation, verification, and claim auditing
+  are execution roles, not decision roles). The `fact-checker` stays on
+  Sonnet rather than Haiku because claim extraction is the step that fails
+  silently: a model that misses an unsupported claim defeats the role's
+  purpose, and the agent runs rarely enough that the cost difference does
+  not matter. Subagents inherit the session's effort, so a max-effort lead
+  gives the judgment agents max effort too.
 - Workflows: pin worker stages to a cheap model in the script and reserve the
   strong model for synthesis or critique. The `tm-review-changes` workflow in
   `.claude/workflows/` is the worked example: a fixed set of Sonnet reviewers
