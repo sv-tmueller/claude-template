@@ -44,7 +44,7 @@ ready-made agent team for Claude Code.
   (`superpowers@claude-plugins-official`; the methodology skills:
   brainstorming, writing-plans, TDD, verification).
 - `.claude-plugin/marketplace.json` - the marketplace catalog, pointing the
-  `quinnslab` plugin at the `.claude/` root. The plugin manifest itself lives
+  `sv-tmueller` plugin at the `.claude/` root. The plugin manifest itself lives
   at `.claude/.claude-plugin/plugin.json` (see "Getting the team into your
   repos" below).
 
@@ -101,14 +101,14 @@ Code can install the team without cloning or copying anything:
 
 ```text
 /plugin marketplace add sv-tmueller/claude-template
-/plugin install quinnslab@claude-template
+/plugin install sv-tmueller@claude-template
 ```
 
-This installs the 4 agents and all 7 skills under the `quinnslab` namespace,
-for example `/quinnslab:tm-advisor` and `/quinnslab:tm-kickoff`. The two
+This installs the 4 agents and all 7 skills under the `sv-tmueller` namespace,
+for example `/sv-tmueller:tm-advisor` and `/sv-tmueller:tm-kickoff`. The two
 review workflows (`tm-review-changes`, `tm-review-codebase`) ship as thin
 wrapper skills, since a plugin does not auto-register `workflows/`.
-`/quinnslab:tm-install-team` ships too (default-directory discovery does not
+`/sv-tmueller:tm-install-team` ships too (default-directory discovery does not
 exclude it) but is a no-op outside a checkout of this template: it has
 nothing to copy from.
 

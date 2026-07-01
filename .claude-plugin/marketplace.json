@@ -1,12 +1,12 @@
 {
   "name": "claude-template",
-  "description": "Single-plugin marketplace for the quinnslab orchestrator team.",
+  "description": "Single-plugin marketplace for the sv-tmueller orchestrator team.",
   "owner": {
     "name": "Thomas Mueller"
   },
   "plugins": [
     {
-      "name": "quinnslab",
+      "name": "sv-tmueller",
       "source": "./.claude",
       "description": "Orchestrator team: 4 role agents, the tm- operational skills, and the review workflows."
     }

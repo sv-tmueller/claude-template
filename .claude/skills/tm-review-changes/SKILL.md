@@ -6,7 +6,7 @@ argument-hint: "[base ref, default origin/main]"
 ---
 
 Run the `tm-review-changes` workflow against the current diff. This skill
-exists only so the plugin install (`quinnslab@claude-template`) can reach the
+exists only so the plugin install (`sv-tmueller@claude-template`) can reach the
 workflow: the committed-repo and `/tm-install-team` config-dir roots already
 expose it directly as `/tm-review-changes` because Claude Code auto-discovers
 `.claude/workflows/*.js`, and a plugin does not get that auto-discovery for
